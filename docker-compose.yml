@@ -8,8 +8,12 @@ services:
      - env_file
     networks:
       - db_network
+    container_name: database
+
+
   flaskapp:
     build: .
+    image: app
     env_file:
       - env_file
     volumes:
@@ -19,6 +23,9 @@ services:
       - web_network
     depends_on:
       - db
+    container_name: flaskapp
+
+
   rabbit:
     image: "rabbitmq:3-management"
     hostname: "rabbit"
@@ -31,8 +38,12 @@ services:
       NAME: "rabbitmq"
     networks:
      - ingestion_network
+    container_name: rabbit
+
+
   ingestion:
     build: ingestion/.
+    image: ingestion
     env_file:
       - env_file
     networks:
@@ -42,8 +53,12 @@ services:
       - rabbit
     ports:
      - "80:5672"
+    container_name: ingest
+
+
   processing:
     build: processing/.
+    image: processing
     env_file:
      - env_file
     networks:
@@ -54,16 +69,20 @@ services:
       - rabbit
     ports:
      - "81:5672"
+    container_name: process
+
+
   nginx:
     image: "nginx:1.13.5"
     ports:
-      - "80:8080"
+      - "8080:80"
     volumes:
       - ./conf.d:/etc/nginx/conf.d
     networks:
       - web_network
     depends_on: 
       - flaskapp
+    container_name: nginx
 networks:
   db_network:
     driver: bridge
