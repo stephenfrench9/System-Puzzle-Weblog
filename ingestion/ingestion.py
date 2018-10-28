@@ -4,8 +4,9 @@ import json
 import os
 import time
 from utils import parse_log, is_get_request
+import sys
 
-#Connect  to RabbitMQ
+#Connect  to RabbitMQn
 credentials = pika.PlainCredentials(os.environ['RABBITMQ_DEFAULT_USER'], os.environ['RABBITMQ_DEFAULT_PASS'])
 parameters = pika.ConnectionParameters(host='rabbit',
                                        port=5672, credentials=credentials)
