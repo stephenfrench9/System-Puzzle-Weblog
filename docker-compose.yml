@@ -12,6 +12,7 @@ services:
     logging:
       driver: "none"
 
+
   flaskapp:
     build: .
     image: app
@@ -42,8 +43,7 @@ services:
     networks:
      - ingestion_network
     container_name: rabbit
-    logging:
-      driver: "none"
+
 
 
   ingestion:

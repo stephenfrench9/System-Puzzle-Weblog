@@ -24,8 +24,15 @@ print('Processing: Connection to RabbitMQ established')
 channel = connection.channel()
 channel.queue_declare(queue='log-analysis')
 
+
 # Connect to PostgreSQL database
+print("here we go, trying to connect")
+print("POSTGRES_DB is " + os.environ['POSTGRES_DB'])
+print("POSTGREST_USER is " + os.environ['POSTGRES_USER'])
+print("POSTGRES_PASSWORD is " + os.environ['POSTGRES_PASSWORD'])
+
 conn = psycopg2.connect(host='db', database=os.environ['POSTGRES_DB'], user=os.environ['POSTGRES_USER'], password=os.environ['POSTGRES_PASSWORD'])
+print("we connectect")
 cur = conn.cursor()
 
 
