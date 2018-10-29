@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import locale
 import pika
 import json
 import os
@@ -29,12 +30,14 @@ channel.queue_declare(queue='log-analysis')
 
 # Read weblogs
 
-f = open('weblogs.log', 'r')
+f = open('weblogs.log', 'r', encoding='latin-1')
+print(locale.getpreferredencoding(False))
 
+a=0
 while True:
     try:
+        a+=1
         msg = f.readline()
-
         if not msg:
             break
         #If message is GET request, ingest it into the queue
@@ -49,6 +52,6 @@ while True:
                                   body=body)
         
     except:
-        print("Unexpected error:" +  sys.exc_info()[0])
-    
+        print("Unexpected error:" + str(sys.exc_info()[0]))
+        print(a)
 connection.close()

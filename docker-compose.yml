@@ -43,6 +43,8 @@ services:
     networks:
      - ingestion_network
     container_name: rabbit
+    logging:
+      driver: "none"
 
 
 
