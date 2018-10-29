@@ -31,13 +31,14 @@ channel.queue_declare(queue='log-analysis')
 # Read weblogs
 
 f = open('weblogs.log', 'r', encoding='latin-1')
-print(locale.getpreferredencoding(False))
+# print(locale.getpreferredencoding(False))
 
 a=0
 while True:
     try:
-        a+=1
+        # a+=1
         msg = f.readline()
+
         if not msg:
             break
         #If message is GET request, ingest it into the queue
@@ -53,5 +54,5 @@ while True:
         
     except:
         print("Unexpected error:" + str(sys.exc_info()[0]))
-        print(a)
+        # print(a)
 connection.close()

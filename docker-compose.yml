@@ -9,8 +9,8 @@ services:
     networks:
       - db_network
     container_name: database
-    logging:
-      driver: "none"
+#    logging:
+#      driver: "none"
 
 
   flaskapp:
@@ -26,8 +26,8 @@ services:
     depends_on:
       - db
     container_name: flaskapp
-    logging:
-      driver: "none"
+#    logging:
+#      driver: "none"
 
 
   rabbit:
@@ -43,8 +43,8 @@ services:
     networks:
      - ingestion_network
     container_name: rabbit
-    logging:
-      driver: "none"
+#    logging:
+#      driver: "none"
 
 
 
@@ -78,8 +78,8 @@ services:
     ports:
      - "81:5672"
     container_name: process
-    logging:
-      driver: "none"
+#    logging:
+#      driver: "none"
 
 
   nginx:
@@ -93,8 +93,7 @@ services:
     depends_on: 
       - flaskapp
     container_name: nginx
-    logging:
-      driver: "none"
+
 
 networks:
   db_network:
