@@ -9,7 +9,6 @@ import json
 credentials = pika.PlainCredentials(os.environ['RABBITMQ_DEFAULT_USER'], os.environ['RABBITMQ_DEFAULT_PASS'])
 parameters = pika.ConnectionParameters(host='rabbit',
                                        port=5672, credentials=credentials)
-
 while True:
     try:
         connection = pika.BlockingConnection(parameters)
@@ -17,55 +16,32 @@ while True:
     except pika.exceptions.AMQPConnectionError:
         print('Processing: RabbitMQ not up yet.')
         time.sleep(2)
-        
 print('Processing: Connection to RabbitMQ established')
 
 # Connect to log-analysis channgel
 channel = connection.channel()
 channel.queue_declare(queue='log-analysis')
 
-
 # Connect to PostgreSQL database
-print("here we go, trying to connect")
-print("POSTGRES_DB is " + os.environ['POSTGRES_DB'])
-print("POSTGREST_USER is " + os.environ['POSTGRES_USER'])
-print("POSTGRES_PASSWORD is " + os.environ['POSTGRES_PASSWORD'])
-
 conn = psycopg2.connect(host='db', database=os.environ['POSTGRES_DB'], user=os.environ['POSTGRES_USER'], password=os.environ['POSTGRES_PASSWORD'])
-print("we connectect")
 cur = conn.cursor()
 
-# global i
-# i = 0
-
-# main function that reads from RabbitMQ queue and stores it in database
+# read from RabbitMQ queue and store in database
 def callback(ch, method, properties, body):
-    # global i
-    # i = i + 1
-
     msg = json.loads(body)
-
     if(msg['source']=="local"):
         k = "0"
     elif(msg['source']=="remote"):
         k = "1"
     else:
         k="2"
-
     values = "to_date(\'" + msg['day'] + "\', \'YYYY-MM-DD\')" + ", " + msg['status'] +", " + k
-    print(values + msg['source'])
     sql = """INSERT INTO weblogs (day, status, source)
              VALUES (%s);""" % values
-    # print("Process Container: we are about to store a read from rabbit into the database " + str(i))
-    # print("we store: ")
-    # print(values)
-    # print("type: ")
-    # print(type(values))
-
     cur.execute(sql, body)
     conn.commit()
     
-#Start consumer
+# trigger the above 'callback'
 channel.basic_consume(callback,
                       queue='log-analysis',
                       no_ack=True)
