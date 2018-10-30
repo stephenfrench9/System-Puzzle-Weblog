@@ -8,7 +8,8 @@ from utils import parse_log, is_get_request
 import sys
 
 #Connect  to RabbitMQn
-credentials = pika.PlainCredentials(os.environ['RABBITMQ_DEFAULT_USER'], os.environ['RABBITMQ_DEFAULT_PASS'])
+credentials = pika.PlainCredentials(os.environ['RABBITMQ_DEFAULT_USER'],
+                                    os.environ['RABBITMQ_DEFAULT_PASS'])
 parameters = pika.ConnectionParameters(host='rabbit',
                                        port=5672, credentials=credentials)
 
@@ -41,11 +42,12 @@ while True:
             day, status, source = parse_log(msg)
 
             # Store in RabbitMQ
-            body = json.dumps({'day': str(day), 'status': status, 'source':source})
+            body = json.dumps({'day': str(day),
+                               'status': status,
+                               'source':source})
             channel.basic_publish(exchange='',
                                   routing_key='log-analysis',
                                   body=body)
-        
     except:
         print("Unexpected error:" + str(sys.exc_info()[0]))
 
