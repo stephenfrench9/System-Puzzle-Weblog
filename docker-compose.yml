@@ -35,9 +35,6 @@ services:
     hostname: "rabbit"
     env_file:
      - env_file
-    ports:
-      - "15672:15672"
-      - "5672:5672"
     labels:
       NAME: "rabbitmq"
     networks:
@@ -58,8 +55,6 @@ services:
     restart: on-failure
     depends_on:
       - rabbit
-    ports:
-     - "80:5672"
     container_name: ingest
 
 
@@ -75,8 +70,6 @@ services:
     restart: on-failure
     depends_on:
       - rabbit
-    ports:
-     - "81:5672"
     container_name: process
 #    logging:
 #      driver: "none"
