@@ -35,22 +35,32 @@ conn = psycopg2.connect(host='db', database=os.environ['POSTGRES_DB'], user=os.e
 print("we connectect")
 cur = conn.cursor()
 
-global i
-i = 0
+# global i
+# i = 0
 
 # main function that reads from RabbitMQ queue and stores it in database
 def callback(ch, method, properties, body):
-    global i
-    i = i + 1
+    # global i
+    # i = i + 1
+
     msg = json.loads(body)
-    values = "to_date(\'" + msg['day'] + "\', \'YYYY-MM-DD\')" + ", " + msg['status']
-    sql = """INSERT INTO weblogs (day, status)
+
+    if(msg['source']=="local"):
+        k = "0"
+    elif(msg['source']=="remote"):
+        k = "1"
+    else:
+        k="2"
+
+    values = "to_date(\'" + msg['day'] + "\', \'YYYY-MM-DD\')" + ", " + msg['status'] +", " + k
+    print(values + msg['source'])
+    sql = """INSERT INTO weblogs (day, status, source)
              VALUES (%s);""" % values
-    print("Process Container: we are about to store a read from rabbit into the database " + str(i))
-    print("we store: ")
-    print(values)
-    print("type: ")
-    print(type(values))
+    # print("Process Container: we are about to store a read from rabbit into the database " + str(i))
+    # print("we store: ")
+    # print(values)
+    # print("type: ")
+    # print(type(values))
 
     cur.execute(sql, body)
     conn.commit()

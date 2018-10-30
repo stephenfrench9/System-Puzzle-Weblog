@@ -23,12 +23,30 @@ def index():
     cur.execute(sql_success)
     success = cur.fetchone()[0]
 
+    # Get the number of failed attempts
+    sql_fail = """SELECT COUNT(*) FROM weblogs WHERE status NOT LIKE \'2__\';"""
+    cur.execute(sql_fail)
+    fail = cur.fetchone()[0]
+
+    # sql_location = """SELECT COUNT(*) FROM weblogs WHERE source LIKE \'remote\';"""
+    # cur.execute(sql_location)
+    # located = cur.fetchone()[0]
+    # located = 0;
+
+    total = success + fail
     # Determine rate if there was at least one request
     rate = "No entries yet!"
     if all != 0:
-        rate = str(success / all)
+        rate = success / all
+        all = str(all)
+        success = str(success)
+        fail = str(fail)
+        rate = str(rate)
+        total = str(total)
+        located = str(located)
 
-    return render_template('index.html', rate = rate)
+    return render_template('index.html', rate = rate, all = all, success = success, failure = fail,
+                           total=total, located=located)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
