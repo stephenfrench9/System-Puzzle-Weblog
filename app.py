@@ -71,7 +71,6 @@ def index():
 
         local_sum = success_local + fail_local
         remote_sum = success_remote + fail_remote
-
         local_rate = success_local/local
         remote_rate = success_remote/remote
 
